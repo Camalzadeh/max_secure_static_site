@@ -46,14 +46,15 @@
     setInterval(clearConsole, 300);
   };
 
-  neutralizeConsole();
+  // Temporarily bypassed for live diagnostics
+  // neutralizeConsole();
 
   // 3. Active Debugger Loop (Halt debugger execution if DevTools is opened)
   const triggerDebugger = () => {
     try {
       // Dynamic constructor call bypasses static code scanners
       const debuggerFunc = function() {}.constructor("debugger");
-      debuggerFunc();
+      // debuggerFunc();
     } catch (e) {}
   };
 
@@ -67,7 +68,7 @@
   // Only activate debugger loop if not in local development mode or if forced
   // The obfuscator build script will force-inject additional debugger blocks for production!
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    startDebuggerLoop();
+    // startDebuggerLoop();
   }
 
   // 4. Prototype Anti-Tampering Check

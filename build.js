@@ -214,14 +214,14 @@ async function build() {
     
     const obfuscationConfig = {
       compact: true,
-      controlFlowFlattening: true,
+      controlFlowFlattening: false, // temporarily disabled for clean diagnostic trace
       controlFlowFlatteningThreshold: 0.8,
-      deadCodeInjection: true,
+      deadCodeInjection: false,
       deadCodeInjectionThreshold: 0.4,
-      debugProtection: true,
-      debugProtectionInterval: 1500, // Halts debugger every 1.5s
-      disableConsoleOutput: true,     // Neutralizes console logging output
-      selfDefending: true,             // Self-breaking code when reformatted/prettified
+      debugProtection: false, // disabled for diagnostics
+      debugProtectionInterval: 1500, 
+      disableConsoleOutput: false, // enable console logging for diagnostics
+      selfDefending: false, // disabled for diagnostics
       splitStrings: true,
       stringArray: true,
       stringArrayEncoding: ['base64', 'rc4'],
