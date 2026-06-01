@@ -1,0 +1,36 @@
+name: Build & Secure Deploy static site
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }} # Recommended to avoid concurrent deployment clashes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Hardened Compiler Build
+        run: npm run build
+
+      - name: Deploy Secure Site to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # Deploy ONLY the minified & obfuscated distribution folder
+          branch: gh-pages
+          clean: true

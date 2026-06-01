@@ -1,23 +1,29 @@
 {
-  "name": "max_secure_static_site",
+  "name": "max-secure-static-site",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Maximum Secure Static Site with Frontend Hardening & Obfuscation",
+  "main": "build.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "lite-server --baseDir=src",
+    "prod": "lite-server --baseDir=dist",
+    "build": "node build.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Camalzadeh/max_secure_static_site.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Camalzadeh/max_secure_static_site/issues"
-  },
-  "homepage": "https://github.com/Camalzadeh/max_secure_static_site#readme",
+  "keywords": [
+    "security",
+    "obfuscation",
+    "steganography",
+    "anti-tamper",
+    "hardened-frontend"
+  ],
+  "author": "Antigravity AI",
+  "license": "MIT",
   "dependencies": {
-    "express": "^5.1.0"
+    "autoprefixer": "^10.4.19",
+    "html-minifier-terser": "^7.2.0",
+    "javascript-obfuscator": "^4.1.0",
+    "lite-server": "^2.6.1",
+    "pngjs": "^7.0.0",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3"
   }
 }
