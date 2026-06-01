@@ -4,8 +4,8 @@
   "description": "Maximum Secure Static Site with Frontend Hardening & Obfuscation",
   "main": "build.js",
   "scripts": {
-    "dev": "lite-server --baseDir=src",
-    "prod": "lite-server --baseDir=dist",
+    "dev": "node server.js",
+    "prod": "node server.js --prod",
     "build": "node build.js"
   },
   "keywords": [
