@@ -168,7 +168,48 @@ async function build() {
     fs.writeFileSync('dist/index.html', minHtml);
     console.log("[+] HTML index file minified successfully.");
 
-    // 2.5 JavaScript Obfuscation & Active Defenses
+    // 2.5 JavaScript Bundling and Obfuscation
+    console.log("[*] Bundling JavaScript modules into a single client IIFE...");
+    
+    // Read the source of modular files
+    const shieldSrc = fs.readFileSync('src/js/modules/shield.js', 'utf8');
+    const authSrc = fs.readFileSync('src/js/modules/auth.js', 'utf8');
+    const renderSrc = fs.readFileSync('src/js/modules/render.js', 'utf8');
+    const mainSrc = fs.readFileSync('src/js/main.js', 'utf8');
+
+    // Clean export keywords to make them standard functions inside local scope
+    const cleanShield = shieldSrc.replace(/export\s+/g, '');
+    const cleanAuth = authSrc.replace(/export\s+/g, '');
+    const cleanRender = renderSrc.replace(/export\s+/g, '');
+    
+    // Remove ES6 import lines from main.js
+    const cleanMain = mainSrc.replace(/import\s+[\s\S]*?from\s+['"].*?['"];?/g, '');
+
+    // Construct a self-contained IIFE bundle
+    const bundledCode = `(function() {
+      'use strict';
+      
+      // ==========================================
+      // MODULE: SHIELD DEFENSER
+      // ==========================================
+      ${cleanShield}
+      
+      // ==========================================
+      // MODULE: PIXEL DECRYPTION ENGINE
+      // ==========================================
+      ${cleanAuth}
+      
+      // ==========================================
+      // MODULE: CLOSED SHADOW DOM RENDERER
+      // ==========================================
+      ${cleanRender}
+      
+      // ==========================================
+      // MAIN ACCESS ROUTER GATEWAY
+      // ==========================================
+      ${cleanMain}
+    })();`;
+
     console.log("[*] Commencing JS Obfuscation & Active Environment Protections...");
     
     const obfuscationConfig = {
@@ -188,27 +229,21 @@ async function build() {
       unicodeEscapeSequence: true
     };
 
-    const jsFiles = [
-      { src: 'src/js/security.js', dest: 'dist/js/security.js' },
-      { src: 'src/js/main.js', dest: 'dist/js/main.js' },
-      { src: 'src/js/modules/shield.js', dest: 'dist/js/modules/shield.js' },
-      { src: 'src/js/modules/auth.js', dest: 'dist/js/modules/auth.js' },
-      { src: 'src/js/modules/render.js', dest: 'dist/js/modules/render.js' }
-    ];
+    // 1. Obfuscate Bootstrap Security Script
+    console.log("  [>] Securing: src/js/security.js -> dist/js/security.js");
+    const securityCode = fs.readFileSync('src/js/security.js', 'utf8');
+    const securityObfuscated = JavaScriptObfuscator.obfuscate(securityCode, obfuscationConfig);
+    fs.writeFileSync('dist/js/security.js', securityObfuscated.getObfuscatedCode());
 
-    jsFiles.forEach(file => {
-      console.log(`  [>] Securing: ${file.src} -> ${file.dest}`);
-      const code = fs.readFileSync(file.src, 'utf8');
-      const obfuscated = JavaScriptObfuscator.obfuscate(code, obfuscationConfig);
-      
-      // Ensure target subdirectories exist
-      const destDir = path.dirname(file.dest);
-      if (!fs.existsSync(destDir)) {
-        fs.mkdirSync(destDir, { recursive: true });
-      }
-      
-      fs.writeFileSync(file.dest, obfuscated.getObfuscatedCode());
-    });
+    // 2. Obfuscate Unified Bundled Code
+    console.log("  [>] Securing Bundled Client: src/js/[main, modules] -> dist/js/main.js");
+    const mainObfuscated = JavaScriptObfuscator.obfuscate(bundledCode, obfuscationConfig);
+    fs.writeFileSync('dist/js/main.js', mainObfuscated.getObfuscatedCode());
+
+    // 3. Clean up the empty dist modules folder if it exists
+    if (fs.existsSync('dist/js/modules')) {
+      fs.rmSync('dist/js/modules', { recursive: true, force: true });
+    }
 
     console.log("[+] All JavaScript files compiled and obfuscated.");
     console.log("=== MSSS SECURITY STATIC SITE BUILD COMPLETED SUCCESSFULLY ===");
