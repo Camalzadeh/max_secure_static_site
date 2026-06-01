@@ -110,30 +110,36 @@ The following 12 mandatory security defenses work cohesively:
 
 ---
 
-## 4. Operational Setup Guide
+## 4. Diagnostics, Hardening & Refactoring Log (v1.0.4)
 
-### Local Development
-To launch the project locally for debugging or extending components:
+During testing and deployment, we performed an extensive optimization log to resolve critical browser compatibility, strict mode, DOM load timing, and sync locks:
 
-1. **Install Dependencies**:
-   ```bash
-   npm install --no-bin-links
-   ```
-2. **Execute Build**:
-   ```bash
-   npm run build
-   ```
-3. **Launch Dev Live Server**:
-   ```bash
-   npm run dev
-   ```
-   *The local server will spin up on `http://localhost:3000` pointing directly to the development `src/` directory. (Note: active debugger loops are bypassed on localhost to allow development debugging).*
+### 1. Unified Comment Purging
+- **Identified Issue**: Inline code comments, documentation headers, and footprints inside source modules (`main.js`, `security.js`, `auth.js`, `shield.js`, `render.js`) and structural templates (`index.html`) were bloating code and revealing structural layout tips in source files.
+- **Applied Fix**: Performed a codebase-wide clean and purge of all inline comments, explanatory footnotes, block markers, and modular layout guides. This maintains pristine raw files and prevents any hints from leaking in minified layouts.
 
-4. **Verify Secure Production Site**:
-   ```bash
-   npm run prod
-   ```
-   *Runs a local server pointing to the protected, obfuscated `dist/` folder.*
+### 2. DOMContentLoaded Timing & Race Conditions
+- **Identified Issue**: The packaged production client modules are loaded asynchronously. If the browser finishes parsing the DOM tree and fires the `DOMContentLoaded` event before the obfuscated code finishes loading, the main event coordinator listener in `main.js` never triggers, leaving the user with a permanent black loading screen.
+- **Applied Fix**: Implemented a state-independent readyState wrapper that checks `document.readyState` and initializes immediately if the DOM is already interactive or complete:
+  ```javascript
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
+  ```
+
+### 3. Strict Mode Console Reassignment Errors
+- **Identified Issue**: Defining overridden console log channels with `writable: false` descriptors threw uncaught `TypeError: Cannot assign to read-only property 'log'` crashes when the browser executed strict-mode obfuscated helpers that attempted to reassign console properties.
+- **Applied Fix**: Isolated these properties or compiled matching parameters inside `build.js` using customized configuration rules to ensure seamless script execution without throwing strict-mode re-assignment violations.
+
+### 4. Third-Party Prototype Freeze Exceptions
+- **Identified Issue**: Locking prototype modifications globally via `Object.freeze(Object.prototype)` broke browser scripting engine optimizations and crashed during dynamic variable initialization for key decoder arrays.
+- **Applied Fix**: Maintained browser prototype structures in their default open state while strictly securing custom application namespaces (like the custom namespace `SecurityShield` using `Object.freeze()`).
+
+### 5. Reliable Build Pipeline Sync Bypass
+- **Identified Issue**: Cloud-synchronized folders (like Google Drive on Windows) hold long-running active handles, resulting in `Access is denied` or `EPERM` errors during recursive builds or compilation copying.
+- **Applied Fix**: Created an automated hybrid Powershell build script (`build.ps1`) that copies all working directories to local SSD temporary folders (`C:\Users\Humbat\AppData\Local\Temp\msss-temp`), installs packages, triggers compilation, and copies the resulting compiled `dist/` and `src/` assets back using file-overwriting to bypass system locks.
 
 ---
 
