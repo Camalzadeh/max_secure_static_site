@@ -11,15 +11,8 @@
 (function () {
   'use strict';
 
-  // 1. Freeze Core Global Objects & Prototypes to block monkey-patching
-  try {
-    Object.freeze(Object.prototype);
-    Object.freeze(Array.prototype);
-    Object.freeze(Function.prototype);
-    Object.freeze(String.prototype);
-  } catch (e) {
-    // Fail silently to avoid breaking execution, but continue shield
-  }
+  // Global Prototype freezing is bypassed to prevent standard JS engine TypeError crashes.
+  // Standard shields remain fully active.
 
   // 2. Destructive Console Override (Neutralize developer tools inspection)
   const clearConsole = () => {
