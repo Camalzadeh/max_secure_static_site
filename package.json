@@ -15,7 +15,7 @@
     "anti-tamper",
     "hardened-frontend"
   ],
-  "author": "Antigravity AI",
+  "author": "Camalzadeh",
   "license": "MIT",
   "dependencies": {
     "autoprefixer": "^10.4.19",

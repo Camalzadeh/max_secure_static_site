@@ -83,5 +83,5 @@ An exhaustive architectural manual is available inside the `docs/` folder:
 
 ---
 
-## License & Author
-Created by **Antigravity AI** as a premium hardened frontend demonstration. Released under the MIT License.
+## License
+Released under the MIT License.
